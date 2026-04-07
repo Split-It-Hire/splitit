@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { Booking } from "@prisma/client";
 import { format, startOfMonth, endOfMonth } from "date-fns";
 import Link from "next/link";
 import { Calendar, DollarSign, Package, AlertCircle } from "lucide-react";
@@ -121,7 +120,7 @@ export default async function AdminDashboard() {
           <div className="px-5 py-8 text-center text-sm text-gray-400">No upcoming bookings</div>
         ) : (
           <div className="divide-y divide-gray-50">
-            {upcomingBookings.map((b: Booking) => (
+            {upcomingBookings.map((b) => (
               <Link
                 key={b.id}
                 href={`/admin/bookings/${b.id}`}

@@ -44,19 +44,16 @@ export default function CustomerDetailsForm({ deliveryFee, onSubmit, onBack }: P
   async function uploadFile(file: File, side: "front" | "back") {
     setUploading(side);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("side", side);
-
-      const res = await fetch("/api/upload/id", {
-        method: "POST",
-        body: formData,
+      const { upload } = await import("@vercel/blob/client");
+      const filename = `id-${side}-${crypto.randomUUID()}.${file.name.split(".").pop() || "jpg"}`;
+      const blob = await upload(filename, file, {
+        access: "private",
+        handleUploadUrl: "/api/upload/id",
+        contentType: file.type,
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
 
-      if (side === "front") setIdFront(data.url);
-      else setIdBack(data.url);
+      if (side === "front") setIdFront(blob.url);
+      else setIdBack(blob.url);
     } catch (err) {
       setErrors((prev) => ({
         ...prev,

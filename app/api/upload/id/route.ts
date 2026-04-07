@@ -1,42 +1,30 @@
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextRequest, NextResponse } from "next/server";
-import { put } from "@vercel/blob";
-import { randomUUID } from "crypto";
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  const body = (await request.json()) as HandleUploadBody;
+
   try {
-    const formData = await req.formData();
-    const file = formData.get("file") as File | null;
-    const side = formData.get("side") as string | null;
-
-    if (!file || !side) {
-      return NextResponse.json({ error: "Missing file or side" }, { status: 400 });
-    }
-
-    // Validate type
-    const validTypes = ["image/jpeg", "image/png", "image/webp", "image/heic"];
-    if (!validTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: "Invalid file type. Please upload a JPG, PNG, or WEBP image." },
-        { status: 400 }
-      );
-    }
-
-    // Limit size to 10MB
-    if (file.size > 10 * 1024 * 1024) {
-      return NextResponse.json({ error: "File too large. Max 10 MB." }, { status: 400 });
-    }
-
-    const ext = file.name.split(".").pop() || "jpg";
-    const filename = `id-${side}-${randomUUID()}.${ext}`;
-
-    const blob = await put(filename, file, {
-      access: "private",
-      contentType: file.type,
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async () => {
+        return {
+          allowedContentTypes: ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"],
+          maximumSizeInBytes: 10 * 1024 * 1024, // 10 MB
+          access: "private",
+        };
+      },
+      onUploadCompleted: async ({ blob }) => {
+        console.log("ID upload completed:", blob.pathname);
+      },
     });
 
-    return NextResponse.json({ url: blob.url });
+    return NextResponse.json(jsonResponse);
   } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 400 }
+    );
   }
 }

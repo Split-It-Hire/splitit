@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight, Upload, Info } from "lucide-react";
+import { ChevronRight, Upload, Info, CheckCircle2 } from "lucide-react";
 
 interface Props {
   deliveryFee: number;
@@ -259,10 +259,16 @@ export default function CustomerDetailsForm({ deliveryFee, onSubmit, onBack }: P
                     }`}
                   >
                     {url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={url} alt={`ID ${side}`} className="w-full h-16 object-cover rounded-lg" />
+                      <div className="flex flex-col items-center gap-1.5 py-1">
+                        <CheckCircle2 size={32} className="text-green-500" />
+                        <span className="text-xs font-semibold text-green-700">Uploaded ✓</span>
+                        <span className="text-xs text-green-600 opacity-70">Tap to replace</span>
+                      </div>
                     ) : uploading === side ? (
-                      <div className="text-xs text-gray-500">Uploading...</div>
+                      <div className="flex flex-col items-center gap-1.5 py-1">
+                        <div className="w-6 h-6 border-2 border-green-400 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-xs text-gray-500">Uploading...</span>
+                      </div>
                     ) : (
                       <>
                         <Upload size={20} className="text-gray-400 mb-1" />

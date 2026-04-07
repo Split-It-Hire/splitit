@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     const filename = `id-${side}-${randomUUID()}.${ext}`;
 
     const blob = await put(filename, file, {
-      access: "public",
+      access: "private",
       contentType: file.type,
     });
 

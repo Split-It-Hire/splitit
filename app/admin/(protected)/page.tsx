@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { format, startOfMonth, endOfMonth } from "date-fns";
+
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { Calendar, DollarSign, Package, AlertCircle } from "lucide-react";
 

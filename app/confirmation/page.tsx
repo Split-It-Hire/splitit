@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
+
+export const dynamic = "force-dynamic";
 import { CheckCircle, Calendar, MapPin, Clock, Download } from "lucide-react";
 import Link from "next/link";
 

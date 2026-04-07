@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import PickupChecklistForm from "@/components/checklist/PickupChecklistForm";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Pickup Condition Checklist",
   robots: { index: false },

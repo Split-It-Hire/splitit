@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 import BondActions from "@/components/admin/BondActions";
 import BookingStatusControl from "@/components/admin/BookingStatusControl";
 

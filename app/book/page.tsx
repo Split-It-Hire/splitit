@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import BookingWizard from "@/components/booking/BookingWizard";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Book Your Log Splitter",
   description: "Check availability and book your hydraulic log splitter hire online. Select dates, upload ID, pay securely via Stripe.",

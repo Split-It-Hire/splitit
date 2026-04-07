@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 function statusBadge(status: string) {
   const map: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-800",

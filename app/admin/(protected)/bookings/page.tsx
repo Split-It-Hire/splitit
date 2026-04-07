@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { Booking } from "@prisma/client";
 import { format } from "date-fns";
 import Link from "next/link";
 
@@ -87,7 +88,7 @@ export default async function AdminBookings({ searchParams }: Props) {
                   </td>
                 </tr>
               ) : (
-                bookings.map((b) => (
+                bookings.map((b: Booking) => (
                   <tr key={b.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3">
                       <Link

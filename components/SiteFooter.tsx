@@ -70,6 +70,11 @@ export default function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/privacy" className="hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
                 <Link href="/#faq" className="hover:text-white transition-colors">
                   FAQ
                 </Link>

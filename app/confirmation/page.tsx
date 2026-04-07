@@ -161,12 +161,12 @@ export default async function ConfirmationPage({ searchParams }: Props) {
 
         <div className="text-center text-sm text-gray-500">
           Questions? Email{" "}
-          <a href="mailto:hello@splitit.com.au" className="text-green-700 hover:underline">
-            hello@splitit.com.au
+          <a href="mailto:brett@splitithire.com.au" className="text-green-700 hover:underline">
+            brett@splitithire.com.au
           </a>{" "}
           or call{" "}
-          <a href="tel:+61400000000" className="text-green-700 hover:underline">
-            0400 000 000
+          <a href="tel:+61414601836" className="text-green-700 hover:underline">
+            0414 601 836
           </a>
         </div>
       </div>

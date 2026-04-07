@@ -8,8 +8,8 @@ export default function SchemaMarkup() {
         name: "Split It Gold Coast",
         description: "Hydraulic log splitter hire on the Gold Coast, QLD. Book online.",
         url: "https://splitit.com.au",
-        telephone: "+61400000000",
-        email: "hello@splitit.com.au",
+        telephone: "+61414601836",
+        email: "brett@splitithire.com.au",
         address: {
           "@type": "PostalAddress",
           addressLocality: "Mudgeeraba",

@@ -3,8 +3,8 @@ import { format } from "date-fns";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM = "Split It Gold Coast <noreply@splitit.com.au>";
-const REPLY_TO = "hello@splitit.com.au";
+const FROM = "Split It Gold Coast <brett@splitithire.com.au>";
+const REPLY_TO = "brett@splitithire.com.au";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://splitit.com.au";
 
 function baseTemplate(title: string, body: string): string {
@@ -40,8 +40,8 @@ function baseTemplate(title: string, body: string): string {
   </div>
   <div class="body">${body}</div>
   <div class="footer">
-    <p>Split It Gold Coast &nbsp;|&nbsp; Mudgeeraba QLD 4213 &nbsp;|&nbsp; ABN: XX XXX XXX XXX</p>
-    <p>Questions? Email <a href="mailto:hello@splitit.com.au">hello@splitit.com.au</a> or call 0400 000 000</p>
+    <p>Split It Gold Coast &nbsp;|&nbsp; Mudgeeraba QLD 4213 &nbsp;|&nbsp; ABN: 43 762 412 524</p>
+    <p>Questions? Email <a href="mailto:brett@splitithire.com.au">brett@splitithire.com.au</a> or call 0414 601 836</p>
     <p>All prices include GST.</p>
   </div>
 </div>
@@ -107,7 +107,7 @@ export async function sendBookingConfirmation(booking: BookingEmailData) {
 
 <a class="cta-btn" href="${SITE_URL}/terms">View Terms of Hire</a>
 
-<p>Any questions? Reply to this email or call <strong>0400 000 000</strong>.</p>
+<p>Any questions? Reply to this email or call <strong>0414 601 836</strong>.</p>
 <p>Thanks for booking with us!</p>`;
 
   await resend.emails.send({
@@ -146,7 +146,7 @@ export async function sendPickupReminder(booking: BookingEmailData & { pickupAdd
 <li>Never put your hands in the splitting zone while the machine is operating</li>
 </ul>
 
-<p>Questions on the day? Call <strong>0400 000 000</strong>.</p>`;
+<p>Questions on the day? Call <strong>0414 601 836</strong>.</p>`;
 
   await resend.emails.send({
     from: FROM,
@@ -226,8 +226,8 @@ export async function sendBondCaptured(
 
 <p>If you have any questions or would like to discuss this, please contact us directly:</p>
 <ul>
-<li>Email: <a href="mailto:hello@splitit.com.au">hello@splitit.com.au</a></li>
-<li>Phone: 0400 000 000</li>
+<li>Email: <a href="mailto:brett@splitithire.com.au">brett@splitithire.com.au</a></li>
+<li>Phone: 0414 601 836</li>
 </ul>`;
 
   await resend.emails.send({

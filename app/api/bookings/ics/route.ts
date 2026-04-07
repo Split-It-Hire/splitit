@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
     `DTSTART;VALUE=DATE:${startStr}`,
     `DTEND;VALUE=DATE:${endStr}`,
     `SUMMARY:Log Splitter Hire — Split It Gold Coast`,
-    `DESCRIPTION:Booking ref: ${booking.id}\\nReturn by 5pm on ${format(booking.endDate, "d MMM yyyy")}\\nContact: 0400 000 000`,
+    `DESCRIPTION:Booking ref: ${booking.id}\\nReturn by 5pm on ${format(booking.endDate, "d MMM yyyy")}\\nContact: 0414 601 836`,
     `LOCATION:Mudgeeraba QLD 4213`,
     "END:VEVENT",
     "END:VCALENDAR",

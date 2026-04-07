@@ -4,7 +4,7 @@ export const TERMS_CONTENT = `
 <p><strong>Last updated: April 2026</strong></p>
 
 <h4 style="font-weight:700;margin-top:12px;margin-bottom:4px">1. Parties</h4>
-<p>These Terms of Hire ("Terms") govern the hire of equipment between Split It Gold Coast ABN: XX XXX XXX XXX ("Owner") and the person who has submitted a booking ("Hirer").</p>
+<p>These Terms of Hire ("Terms") govern the hire of equipment between Split It Gold Coast ABN: 43 762 412 524 ("Owner") and the person who has submitted a booking ("Hirer").</p>
 
 <h4 style="font-weight:700;margin-top:12px;margin-bottom:4px">2. Equipment</h4>
 <p>The equipment hired is a 30-tonne hydraulic log splitter including safety accessories as specified in the booking confirmation. The Hirer accepts the equipment in the condition documented at pickup.</p>

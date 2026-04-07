@@ -30,17 +30,17 @@ export default function SiteFooter() {
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Phone size={13} className="text-gray-500" />
-                <a href="tel:+61400000000" className="hover:text-white transition-colors">
-                  0400 000 000
+                <a href="tel:+61414601836" className="hover:text-white transition-colors">
+                  0414 601 836
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={13} className="text-gray-500" />
                 <a
-                  href="mailto:hello@splitit.com.au"
+                  href="mailto:brett@splitithire.com.au"
                   className="hover:text-white transition-colors"
                 >
-                  hello@splitit.com.au
+                  brett@splitithire.com.au
                 </a>
               </li>
               <li className="flex items-start gap-2">
@@ -95,7 +95,7 @@ export default function SiteFooter() {
 
         {/* Bottom bar */}
         <div className="border-t border-gray-800 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} Split It Gold Coast. ABN: XX XXX XXX XXX</p>
+          <p>© {new Date().getFullYear()} Split It Gold Coast. ABN: 43 762 412 524</p>
           <p>All prices inc. GST &nbsp;|&nbsp; Pickup suburb: Mudgeeraba QLD</p>
         </div>
       </div>

@@ -128,8 +128,8 @@ export default function AdminSettings() {
           <h2 className="font-bold text-gray-900 mb-4">Business Details</h2>
           <div className="space-y-4">
             {textField("Business Name", "businessName")}
-            {textField("Contact Email", "contactEmail", "hello@splitit.com.au")}
-            {textField("Contact Phone", "contactPhone", "0400 000 000")}
+            {textField("Contact Email", "contactEmail", "brett@splitithire.com.au")}
+            {textField("Contact Phone", "contactPhone", "0414 601 836")}
             {textField("Pickup Suburb", "pickupSuburb", "Mudgeeraba")}
           </div>
         </div>

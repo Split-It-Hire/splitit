@@ -49,11 +49,11 @@ export default function SiteHeader() {
           {/* CTA + mobile toggle */}
           <div className="flex items-center gap-3">
             <a
-              href="tel:+61400000000"
+              href="tel:+61414601836"
               className="hidden sm:flex items-center gap-1 text-sm text-gray-600 hover:text-green-800 transition-colors"
             >
               <Phone size={14} />
-              <span>0400 000 000</span>
+              <span>0414 601 836</span>
             </a>
             <Link
               href="/book"
@@ -92,11 +92,11 @@ export default function SiteHeader() {
               </Link>
             ))}
             <a
-              href="tel:+61400000000"
+              href="tel:+61414601836"
               className="py-2 text-gray-600 flex items-center gap-2"
             >
               <Phone size={14} />
-              0400 000 000
+              0414 601 836
             </a>
           </nav>
         </div>

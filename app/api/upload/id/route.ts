@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
-
-// Simple local file upload for development.
-// Replace with Vercel Blob / UploadThing in production.
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,15 +29,12 @@ export async function POST(req: NextRequest) {
     const ext = file.name.split(".").pop() || "jpg";
     const filename = `id-${side}-${randomUUID()}.${ext}`;
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "id");
-    await mkdir(uploadDir, { recursive: true });
+    const blob = await put(filename, file, {
+      access: "public",
+      contentType: file.type,
+    });
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(path.join(uploadDir, filename), buffer);
-
-    const url = `/uploads/id/${filename}`;
-    return NextResponse.json({ url });
+    return NextResponse.json({ url: blob.url });
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });

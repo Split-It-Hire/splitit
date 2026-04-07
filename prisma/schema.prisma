@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String   @default("pending")
+
+  // Customer details
+  customerName     String
+  customerEmail    String
+  customerPhone    String
+  customerAddress  String
+  howHeard         String?
+  idPhotoFrontUrl  String
+  idPhotoBackUrl   String
+
+  // Booking details
+  startDate       DateTime
+  endDate         DateTime
+  numberOfDays    Int
+  hireType        String
+  deliveryOption  String
+  deliveryAddress String?
+
+  // Pricing
+  hireRate     Float
+  hireFeeTotal Float
+  deliveryFee  Float  @default(0)
+  bondAmount   Float
+  totalCharged Float
+
+  // Stripe
+  stripeSessionId       String?
+  stripePaymentIntentId String?
+  stripeBondIntentId    String?
+  bondStatus            String  @default("held")
+  bondCapturedAmount    Float?
+  bondCaptureReason     String?
+
+  // Terms acceptance
+  termsAcceptedAt  DateTime?
+  signatureDataUrl String?
+
+  // Condition checklists (stored as JSON strings)
+  pickupChecklist String?
+  returnChecklist String?
+
+  // Admin
+  adminNotes String?
+}
+
+model BlockedDate {
+  id     String   @id @default(cuid())
+  date   DateTime
+  reason String?
+}
+
+model Settings {
+  id                 String @id @default("default")
+  dailyRate          Float  @default(150)
+  weekendRate        Float  @default(350)
+  weeklyRate         Float  @default(600)
+  bondAmount         Float  @default(500)
+  deliveryFee        Float  @default(50)
+  deliveryRadius     Int    @default(30)
+  businessName       String @default("Split It Gold Coast")
+  contactEmail       String @default("")
+  contactPhone       String @default("")
+  pickupSuburb       String @default("Mudgeeraba")
+  pickupInstructions String @default("")
+  returnInstructions String @default("")
+}

@@ -1,15 +1,13 @@
-export const runtime = "edge";
+import { get } from "@vercel/blob";
+import { NextRequest } from "next/server";
 
-// Streams the private hero video blob to the browser.
-// Edge runtime has no response size limit so large videos stream correctly.
-export async function GET(request: Request): Promise<Response> {
-  const { searchParams } = new URL(request.url);
-  const blobUrl = searchParams.get("url");
+// Use Node.js runtime — the @vercel/blob `get()` function needs undici (Node.js HTTP client)
+// Streaming response bypasses the 4.5 MB serverless body limit
+export async function GET(request: NextRequest): Promise<Response> {
+  const blobUrl = request.nextUrl.searchParams.get("url");
 
-  // Only allow Vercel Blob URLs
-  if (!blobUrl) {
-    return new Response("Not found", { status: 404 });
-  }
+  if (!blobUrl) return new Response("Not found", { status: 404 });
+
   try {
     const parsed = new URL(blobUrl);
     if (!parsed.hostname.endsWith(".blob.vercel-storage.com")) {
@@ -21,29 +19,29 @@ export async function GET(request: Request): Promise<Response> {
 
   // Forward Range header so the browser can seek
   const range = request.headers.get("range");
-  const fetchHeaders: Record<string, string> = {
-    Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}`,
-  };
-  if (range) fetchHeaders["Range"] = range;
 
-  const upstream = await fetch(blobUrl, { headers: fetchHeaders });
+  const result = await get(blobUrl, {
+    access: "private",
+    ...(range ? { headers: { Range: range } } : {}),
+  });
+
+  if (!result || !result.stream) {
+    return new Response("Not found", { status: 404 });
+  }
 
   const responseHeaders = new Headers();
-  responseHeaders.set(
-    "Content-Type",
-    upstream.headers.get("Content-Type") || "video/mp4"
-  );
+  responseHeaders.set("Content-Type", result.blob.contentType || "video/mp4");
   responseHeaders.set("Cache-Control", "public, max-age=3600");
   responseHeaders.set("Accept-Ranges", "bytes");
 
-  const contentLength = upstream.headers.get("Content-Length");
+  const contentLength = result.headers.get("Content-Length");
   if (contentLength) responseHeaders.set("Content-Length", contentLength);
 
-  const contentRange = upstream.headers.get("Content-Range");
+  const contentRange = result.headers.get("Content-Range");
   if (contentRange) responseHeaders.set("Content-Range", contentRange);
 
-  return new Response(upstream.body, {
-    status: upstream.status,
+  return new Response(result.stream as ReadableStream, {
+    status: result.statusCode,
     headers: responseHeaders,
   });
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { BookOpen, Plus, ChevronRight, Search, Folder, X, Edit2, Trash2, Youtube } from "lucide-react";
+import { BookOpen, Plus, ChevronRight, Search, Folder, Edit2, Trash2, Video } from "lucide-react";
 
 interface WikiPage {
   id: string;
@@ -274,7 +274,7 @@ export default function WikiPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1">
-                    <Youtube size={12} className="inline mr-1" />
+                    <Video size={12} className="inline mr-1" />
                     YouTube Video URL <span className="font-normal text-gray-400">(optional)</span>
                   </label>
                   <input

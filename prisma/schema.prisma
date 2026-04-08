@@ -57,6 +57,26 @@ model Booking {
   adminNotes String?
 }
 
+model WikiCategory {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  name      String
+  sortOrder Int        @default(0)
+  pages     WikiPage[]
+}
+
+model WikiPage {
+  id         String       @id @default(cuid())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  title      String
+  body       String       @default("")
+  youtubeUrl String?
+  categoryId String
+  category   WikiCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  sortOrder  Int          @default(0)
+}
+
 model BlockedDate {
   id     String   @id @default(cuid())
   date   DateTime

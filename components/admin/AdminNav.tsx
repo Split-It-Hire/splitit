@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Calendar, Settings, LogOut, List } from "lucide-react";
+import { LayoutDashboard, Calendar, Settings, LogOut, List, BookOpen } from "lucide-react";
 
 export default function AdminNav() {
   const pathname = usePathname();
@@ -17,6 +17,7 @@ export default function AdminNav() {
     { href: "/admin", label: "Dashboard", icon: <LayoutDashboard size={16} /> },
     { href: "/admin/bookings", label: "Bookings", icon: <List size={16} /> },
     { href: "/admin/calendar", label: "Calendar", icon: <Calendar size={16} /> },
+    { href: "/admin/wiki", label: "Wiki", icon: <BookOpen size={16} /> },
     { href: "/admin/settings", label: "Settings", icon: <Settings size={16} /> },
   ];
 

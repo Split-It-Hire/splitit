@@ -6,7 +6,6 @@ import {
   Calendar,
   CreditCard,
   Truck,
-  ChevronDown,
   Star,
   Shield,
   Zap,
@@ -14,12 +13,30 @@ import {
 } from "lucide-react";
 import FaqAccordion from "@/components/FaqAccordion";
 import SchemaMarkup from "@/components/SchemaMarkup";
+import { prisma } from "@/lib/prisma";
 
-export const metadata: Metadata = {
-  title: "Log Splitter Hire Gold Coast | From $150/Day | Split It Gold Coast",
-  description:
-    "Hydraulic log splitter hire on the Gold Coast QLD. Book online, pick up from Mudgeeraba, split your wood, return. $150/day, $350 weekend, $600 week. $500 bond. No fuss.",
-};
+export const dynamic = "force-dynamic";
+
+async function getSettings() {
+  let settings = await prisma.settings.findUnique({ where: { id: "default" } });
+  if (!settings) {
+    settings = await prisma.settings.create({ data: { id: "default" } });
+  }
+  return settings;
+}
+
+/** Format a number as a dollar amount — whole numbers show no decimals */
+function fmt(n: number) {
+  return "$" + (Number.isInteger(n) ? n.toString() : n.toFixed(2));
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await getSettings();
+  return {
+    title: `Log Splitter Hire Gold Coast | From ${fmt(s.dailyRate)}/Day | Split It Gold Coast`,
+    description: `Hydraulic log splitter hire on the Gold Coast QLD. Book online, pick up from ${s.pickupSuburb}, split your wood, return. ${fmt(s.dailyRate)}/day, ${fmt(s.weekendRate)} weekend, ${fmt(s.weeklyRate)} week. ${fmt(s.bondAmount)} bond. No fuss.`,
+  };
+}
 
 const SPECS = [
   { label: "Splitting Force", value: "30 Tonne" },
@@ -32,42 +49,44 @@ const SPECS = [
   { label: "Fuel", value: "Regular unleaded" },
 ];
 
-const FAQS = [
-  {
-    q: "What do I need to bring at pickup?",
-    a: "Your driver's licence (for ID verification — we scan it at booking), a vehicle capable of towing or transporting the machine, and your booking confirmation. If you're towing, a standard ball hitch trailer is required.",
-  },
-  {
-    q: "Is the machine easy to use?",
-    a: "Yes. The log splitter is straightforward to operate. We provide a quick-start guide with your booking confirmation, and there are clear labels on the machine. Most people have it running within 5 minutes.",
-  },
-  {
-    q: "Do you deliver?",
-    a: "Yes, we deliver within a 30 km radius of Mudgeeraba for a flat $50 fee. Select delivery during booking and enter your address — we'll confirm the delivery time by email.",
-  },
-  {
-    q: "What if I damage it?",
-    a: "Normal wear is expected. For damage beyond that, the $500 security bond held on your card covers repair costs. The bond is never charged unless damage is identified — we only capture what repairs actually cost. Our Terms of Hire spell out exactly what counts as damage.",
-  },
-  {
-    q: "What's the bond for?",
-    a: "The $500 bond is a pre-authorisation hold on your card — your bank holds the funds but we don't receive them unless damage or late fees need to be charged. If everything's good, the hold is released after your return and we'll send you a confirmation email. It typically clears within 3–5 business days.",
-  },
-  {
-    q: "Can I extend my hire?",
-    a: "If the machine isn't booked after you, yes! Email or call us as early as possible and we'll sort it out. Extra days are charged at the daily rate.",
-  },
-  {
-    q: "What fuel does it use?",
-    a: "Regular unleaded petrol. The machine comes with a full tank — please return it full, or a fuel levy will apply (captured from bond).",
-  },
-  {
-    q: "What's your cancellation policy?",
-    a: "Full refund for cancellations 48+ hours before pickup. 50% refund for 24–48 hours. No refund within 24 hours. The bond hold is always released immediately on cancellation.",
-  },
-];
+export default async function HomePage() {
+  const s = await getSettings();
 
-export default function HomePage() {
+  const FAQS = [
+    {
+      q: "What do I need to bring at pickup?",
+      a: "Your driver's licence (for ID verification — we scan it at booking), a vehicle capable of towing or transporting the machine, and your booking confirmation. If you're towing, a standard ball hitch trailer is required.",
+    },
+    {
+      q: "Is the machine easy to use?",
+      a: "Yes. The log splitter is straightforward to operate. We provide a quick-start guide with your booking confirmation, and there are clear labels on the machine. Most people have it running within 5 minutes.",
+    },
+    {
+      q: "Do you deliver?",
+      a: `Yes, we deliver within a ${s.deliveryRadius} km radius of ${s.pickupSuburb} for a flat ${fmt(s.deliveryFee)} fee. Select delivery during booking and enter your address — we'll confirm the delivery time by email.`,
+    },
+    {
+      q: "What if I damage it?",
+      a: `Normal wear is expected. For damage beyond that, the ${fmt(s.bondAmount)} security bond held on your card covers repair costs. The bond is never charged unless damage is identified — we only capture what repairs actually cost. Our Terms of Hire spell out exactly what counts as damage.`,
+    },
+    {
+      q: "What's the bond for?",
+      a: `The ${fmt(s.bondAmount)} bond is a pre-authorisation hold on your card — your bank holds the funds but we don't receive them unless damage or late fees need to be charged. If everything's good, the hold is released after your return and we'll send you a confirmation email. It typically clears within 3–5 business days.`,
+    },
+    {
+      q: "Can I extend my hire?",
+      a: "If the machine isn't booked after you, yes! Email or call us as early as possible and we'll sort it out. Extra days are charged at the daily rate.",
+    },
+    {
+      q: "What fuel does it use?",
+      a: "Regular unleaded petrol. The machine comes with a full tank — please return it full, or a fuel levy will apply (captured from bond).",
+    },
+    {
+      q: "What's your cancellation policy?",
+      a: "Full refund for cancellations 48+ hours before pickup. 50% refund for 24–48 hours. No refund within 24 hours. The bond hold is always released immediately on cancellation.",
+    },
+  ];
+
   return (
     <>
       <SchemaMarkup />
@@ -90,7 +109,7 @@ export default function HomePage() {
               <span className="text-green-300">Gold Coast</span>
             </h1>
             <p className="text-lg sm:text-xl text-green-100 mb-8 leading-relaxed">
-              Book online. Pick up from Mudgeeraba. Split your wood. Return. Done.
+              Book online. Pick up from {s.pickupSuburb}. Split your wood. Return. Done.
               <br className="hidden sm:block" />
               No staff. No fuss. Available 7 days.
             </p>
@@ -114,7 +133,7 @@ export default function HomePage() {
             <div className="flex flex-wrap gap-4 mt-8 text-sm text-green-200">
               <span className="flex items-center gap-1.5">
                 <CheckCircle size={15} className="text-green-400" />
-                From $150/day inc. GST
+                From {fmt(s.dailyRate)}/day inc. GST
               </span>
               <span className="flex items-center gap-1.5">
                 <CheckCircle size={15} className="text-green-400" />
@@ -216,13 +235,13 @@ export default function HomePage() {
                 icon: <CreditCard size={28} className="text-green-600" />,
                 step: "02",
                 title: "Pay Securely",
-                desc: "Pay your hire fee via Stripe. A $500 bond is held on your card — not charged — as a security deposit.",
+                desc: `Pay your hire fee via Stripe. A ${fmt(s.bondAmount)} bond is held on your card — not charged — as a security deposit.`,
               },
               {
                 icon: <Truck size={28} className="text-green-600" />,
                 step: "03",
                 title: "Pick Up &amp; Split",
-                desc: "Collect from Mudgeeraba (or we deliver). Complete the pickup checklist on your phone, then get splitting.",
+                desc: `Collect from ${s.pickupSuburb} (or we deliver). Complete the pickup checklist on your phone, then get splitting.`,
               },
               {
                 icon: <CheckCircle size={28} className="text-green-600" />,
@@ -264,9 +283,9 @@ export default function HomePage() {
           <p className="text-gray-500 mb-8">All prices include GST. Bond is a hold only — not charged.</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
             {[
-              { label: "Daily Rate", price: "$150", sub: "per day", highlight: false },
-              { label: "Weekend Rate", price: "$350", sub: "Fri – Sun (3 days)", highlight: true },
-              { label: "Weekly Rate", price: "$600", sub: "7 days", highlight: false },
+              { label: "Daily Rate", price: fmt(s.dailyRate), sub: "per day", highlight: false },
+              { label: "Weekend Rate", price: fmt(s.weekendRate), sub: "Fri – Sun (3 days)", highlight: true },
+              { label: "Weekly Rate", price: fmt(s.weeklyRate), sub: "7 days", highlight: false },
             ].map((p) => (
               <div
                 key={p.label}
@@ -303,11 +322,11 @@ export default function HomePage() {
               <tbody className="divide-y divide-gray-100">
                 <tr>
                   <td className="py-2 text-gray-600">Security Bond (held, not charged)</td>
-                  <td className="py-2 text-right font-semibold text-gray-900">$500</td>
+                  <td className="py-2 text-right font-semibold text-gray-900">{fmt(s.bondAmount)}</td>
                 </tr>
                 <tr>
-                  <td className="py-2 text-gray-600">Delivery (within 30 km of Mudgeeraba)</td>
-                  <td className="py-2 text-right font-semibold text-gray-900">$50</td>
+                  <td className="py-2 text-gray-600">Delivery (within {s.deliveryRadius} km of {s.pickupSuburb})</td>
+                  <td className="py-2 text-right font-semibold text-gray-900">{fmt(s.deliveryFee)}</td>
                 </tr>
                 <tr>
                   <td className="py-2 text-gray-600">Late return (per day)</td>
@@ -370,7 +389,7 @@ export default function HomePage() {
                 Self-Collection
               </h2>
               <p className="text-green-200 text-sm leading-relaxed mb-4">
-                Pick up from Mudgeeraba, Gold Coast. Full address provided 24 hours before your hire
+                Pick up from {s.pickupSuburb}, Gold Coast. Full address provided 24 hours before your hire
                 start date via confirmation email. Available 7 days — no staff required for pickup
                 or return.
               </p>
@@ -397,13 +416,13 @@ export default function HomePage() {
                 Delivery
               </h2>
               <p className="text-green-200 text-sm leading-relaxed mb-4">
-                We deliver within 30 km of Mudgeeraba for a flat $50 fee. Select delivery during
+                We deliver within {s.deliveryRadius} km of {s.pickupSuburb} for a flat {fmt(s.deliveryFee)} fee. Select delivery during
                 booking, enter your address, and we&apos;ll confirm your delivery window by email.
                 Servicing: Burleigh, Robina, Nerang, Tallebudgera, Springbrook, Bonogin, and more.
               </p>
               <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm font-semibold">
                 <Truck size={16} className="text-green-300" />
-                $50 flat delivery fee (inc. GST)
+                {fmt(s.deliveryFee)} flat delivery fee (inc. GST)
               </div>
             </div>
           </div>

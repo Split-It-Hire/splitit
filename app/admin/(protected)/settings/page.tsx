@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { X, Video, CheckCircle2, Loader2 } from "lucide-react";
-import { upload } from "@vercel/blob/client";
 
 interface Settings {
   dailyRate: number;
@@ -58,18 +57,25 @@ export default function AdminSettings() {
     setVideoError(null);
 
     try {
-      const filename = `hero-video-${Date.now()}.${file.name.split(".").pop() || "mp4"}`;
-      const blob = await upload(filename, file, {
-        access: "public",
-        handleUploadUrl: "/api/upload/hero-video",
+      const response = await fetch("/api/upload/hero-video", {
+        method: "POST",
+        body: file,
+        headers: { "Content-Type": file.type },
       });
 
-      // Save URL immediately to settings (both local state and DB)
-      setSettings((prev) => prev ? { ...prev, heroVideoUrl: blob.url } : prev);
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Upload failed");
+      }
+
+      const { url } = await response.json();
+
+      // Save URL to settings state and DB
+      setSettings((prev) => prev ? { ...prev, heroVideoUrl: url } : prev);
       await fetch("/api/admin/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ heroVideoUrl: blob.url }),
+        body: JSON.stringify({ heroVideoUrl: url }),
       });
     } catch (err) {
       setVideoError((err as Error).message || "Upload failed");

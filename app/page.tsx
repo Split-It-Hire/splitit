@@ -95,59 +95,78 @@ export default async function HomePage() {
       <section className="relative bg-gradient-to-br from-green-900 via-green-800 to-green-700 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-28">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm font-medium mb-6">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              Gold Coast &amp; Surrounds — Self-collection &amp; Delivery
-            </div>
-            <h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold uppercase leading-none tracking-tight mb-4"
-              style={{ fontFamily: "var(--font-barlow), sans-serif" }}
-            >
-              Hydraulic Log Splitter Hire
-              <br />
-              <span className="text-green-300">Gold Coast</span>
-            </h1>
-            <p className="text-lg sm:text-xl text-green-100 mb-8 leading-relaxed">
-              Book online. Pick up from {s.pickupSuburb}. Split your wood. Return. Done.
-              <br className="hidden sm:block" />
-              No staff. No fuss. Available 7 days.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/book"
-                className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg px-8 py-4 rounded-xl transition-colors shadow-lg"
+          <div className={`flex flex-col ${s.heroVideoUrl ? "lg:flex-row lg:items-center lg:gap-12" : ""}`}>
+            {/* Text content */}
+            <div className={s.heroVideoUrl ? "lg:flex-1" : "max-w-2xl"}>
+              <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm font-medium mb-6">
+                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                Gold Coast &amp; Surrounds — Self-collection &amp; Delivery
+              </div>
+              <h1
+                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold uppercase leading-none tracking-tight mb-4"
+                style={{ fontFamily: "var(--font-barlow), sans-serif" }}
               >
-                Check Availability &amp; Book
-                <ArrowRight size={20} />
-              </Link>
-              <a
-                href="#pricing"
-                className="inline-flex items-center justify-center gap-2 bg-white/10 border border-white/30 hover:bg-white/20 text-white font-semibold px-6 py-4 rounded-xl transition-colors"
-              >
-                See Pricing
-              </a>
+                Hydraulic Log Splitter Hire
+                <br />
+                <span className="text-green-300">Gold Coast</span>
+              </h1>
+              <p className="text-lg sm:text-xl text-green-100 mb-8 leading-relaxed">
+                Book online. Pick up from {s.pickupSuburb}. Split your wood. Return. Done.
+                <br className="hidden sm:block" />
+                No staff. No fuss. Available 7 days.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link
+                  href="/book"
+                  className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg px-8 py-4 rounded-xl transition-colors shadow-lg"
+                >
+                  Check Availability &amp; Book
+                  <ArrowRight size={20} />
+                </Link>
+                <a
+                  href="#pricing"
+                  className="inline-flex items-center justify-center gap-2 bg-white/10 border border-white/30 hover:bg-white/20 text-white font-semibold px-6 py-4 rounded-xl transition-colors"
+                >
+                  See Pricing
+                </a>
+              </div>
+
+              {/* Quick trust signals */}
+              <div className="flex flex-wrap gap-4 mt-8 text-sm text-green-200">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle size={15} className="text-green-400" />
+                  From {fmt(s.dailyRate)}/day inc. GST
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle size={15} className="text-green-400" />
+                  Fully insured
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle size={15} className="text-green-400" />
+                  30-tonne force
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle size={15} className="text-green-400" />
+                  Instant confirmation
+                </span>
+              </div>
             </div>
 
-            {/* Quick trust signals */}
-            <div className="flex flex-wrap gap-4 mt-8 text-sm text-green-200">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle size={15} className="text-green-400" />
-                From {fmt(s.dailyRate)}/day inc. GST
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle size={15} className="text-green-400" />
-                Fully insured
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle size={15} className="text-green-400" />
-                30-tonne force
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle size={15} className="text-green-400" />
-                Instant confirmation
-              </span>
-            </div>
+            {/* Hero video */}
+            {s.heroVideoUrl && (
+              <div className="mt-10 lg:mt-0 lg:w-[42%] shrink-0">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 aspect-video">
+                  <video
+                    src={s.heroVideoUrl}
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>

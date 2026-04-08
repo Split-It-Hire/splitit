@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Upload, X, Video, CheckCircle2, Loader2 } from "lucide-react";
+import { upload } from "@vercel/blob/client";
 
 interface Settings {
   dailyRate: number;
@@ -16,6 +18,7 @@ interface Settings {
   pickupAddress: string;
   pickupInstructions: string;
   returnInstructions: string;
+  heroVideoUrl: string | null;
 }
 
 export default function AdminSettings() {
@@ -23,6 +26,10 @@ export default function AdminSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [videoUploading, setVideoUploading] = useState(false);
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch("/api/admin/settings")
@@ -30,7 +37,7 @@ export default function AdminSettings() {
       .then((data) => { setSettings(data); setLoading(false); });
   }, []);
 
-  function set(field: keyof Settings, value: string | number) {
+  function set(field: keyof Settings, value: string | number | null) {
     setSettings((prev) => prev ? { ...prev, [field]: value } : prev);
   }
 
@@ -47,10 +54,48 @@ export default function AdminSettings() {
     setTimeout(() => setSaved(false), 2000);
   }
 
+  async function handleVideoUpload(file: File) {
+    setVideoUploading(true);
+    setVideoError(null);
+    setVideoProgress(0);
+
+    try {
+      const filename = `hero-video-${Date.now()}.${file.name.split(".").pop() || "mp4"}`;
+      const blob = await upload(filename, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload/hero-video",
+        onUploadProgress: ({ percentage }) => {
+          setVideoProgress(Math.round(percentage));
+        },
+      });
+
+      // Save URL immediately to settings (both local state and DB)
+      setSettings((prev) => prev ? { ...prev, heroVideoUrl: blob.url } : prev);
+      await fetch("/api/admin/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ heroVideoUrl: blob.url }),
+      });
+    } catch (err) {
+      setVideoError((err as Error).message || "Upload failed");
+    } finally {
+      setVideoUploading(false);
+      setVideoProgress(0);
+    }
+  }
+
+  async function removeVideo() {
+    setSettings((prev) => prev ? { ...prev, heroVideoUrl: null } : prev);
+    await fetch("/api/admin/settings", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ heroVideoUrl: null }),
+    });
+  }
+
   if (loading) return <div className="text-gray-400 text-sm">Loading...</div>;
   if (!settings) return null;
 
-  // settings is non-null here, but TypeScript doesn't narrow through closures
   const s = settings as Settings;
 
   function numField(label: string, field: keyof Settings, prefix = "$") {
@@ -134,6 +179,91 @@ export default function AdminSettings() {
             {textField("Pickup Suburb", "pickupSuburb", "Mudgeeraba")}
             {textField("Pickup Address (sent in reminder email)", "pickupAddress", "3 Carrama Court, Mudgeeraba QLD 4213")}
           </div>
+        </div>
+
+        {/* Hero Video */}
+        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+          <h2 className="font-bold text-gray-900 mb-1">Hero Video</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Upload an 8–10 second video to display in the homepage hero section. MP4, MOV or WebM. Max 200 MB.
+          </p>
+
+          {s.heroVideoUrl ? (
+            <div className="space-y-3">
+              {/* Preview */}
+              <div className="relative rounded-xl overflow-hidden bg-black aspect-video border border-gray-200">
+                <video
+                  src={s.heroVideoUrl}
+                  className="w-full h-full object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 text-sm text-green-700 font-medium">
+                  <CheckCircle2 size={16} className="text-green-600" />
+                  Video active on homepage
+                </div>
+                <button
+                  onClick={() => videoInputRef.current?.click()}
+                  className="ml-auto text-sm text-gray-500 hover:text-gray-700 underline"
+                >
+                  Replace
+                </button>
+                <button
+                  onClick={removeVideo}
+                  className="flex items-center gap-1 text-sm text-red-500 hover:text-red-700 font-medium"
+                >
+                  <X size={14} />
+                  Remove
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              {videoUploading ? (
+                <div className="border-2 border-dashed border-green-300 rounded-xl p-8 text-center bg-green-50">
+                  <Loader2 size={32} className="mx-auto mb-3 text-green-600 animate-spin" />
+                  <p className="text-sm font-semibold text-green-700 mb-2">Uploading video...</p>
+                  <div className="w-full bg-green-200 rounded-full h-2 max-w-xs mx-auto">
+                    <div
+                      className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${videoProgress}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-green-600 mt-2">{videoProgress}%</p>
+                </div>
+              ) : (
+                <button
+                  onClick={() => videoInputRef.current?.click()}
+                  className="w-full border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-green-400 hover:bg-green-50 transition-colors group"
+                >
+                  <Video size={32} className="mx-auto mb-3 text-gray-300 group-hover:text-green-500 transition-colors" />
+                  <p className="text-sm font-semibold text-gray-600 group-hover:text-green-700">
+                    Click to upload hero video
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">MP4 · MOV · WebM · Max 200 MB</p>
+                </button>
+              )}
+              {videoError && (
+                <p className="mt-2 text-sm text-red-600">{videoError}</p>
+              )}
+            </div>
+          )}
+
+          <input
+            ref={videoInputRef}
+            type="file"
+            accept="video/mp4,video/quicktime,video/webm,video/mov"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleVideoUpload(file);
+              e.target.value = "";
+            }}
+          />
         </div>
 
         {/* Instructions */}

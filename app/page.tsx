@@ -176,19 +176,19 @@ export default function HomePage() {
           <p className="text-gray-500 mb-8">Bayer 50-tonne petrol log splitter — horizontal &amp; vertical operation.</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <div className="col-span-2 md:col-span-2 row-span-2 relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
-              <Image src="/images/splitter/splitter-1.jpg" alt="Bayer 50-tonne log splitter - side angle" fill className="object-contain p-4" />
+              <Image src="/images/splitter/50 Tonne Log Splitter 1.jpeg" alt="Bayer 50-tonne log splitter - side angle" fill className="object-contain p-4" />
             </div>
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
-              <Image src="/images/splitter/splitter-2.jpg" alt="Log splitter in vertical position" fill className="object-contain p-4" />
+              <Image src="/images/splitter/50 Tonne Log Splitter 2.jpeg" alt="Log splitter in vertical position" fill className="object-contain p-4" />
             </div>
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
-              <Image src="/images/splitter/splitter-3.jpg" alt="Log splitter front view" fill className="object-contain p-4" />
+              <Image src="/images/splitter/50 Tonne Log Splitter 3.jpeg" alt="Log splitter front view" fill className="object-contain p-4" />
             </div>
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
-              <Image src="/images/splitter/splitter-4.jpg" alt="Log splitter rear angle" fill className="object-contain p-4" />
+              <Image src="/images/splitter/50 Tonne Log Splitter 4.jpeg" alt="Log splitter rear angle" fill className="object-contain p-4" />
             </div>
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
-              <Image src="/images/splitter/splitter-5.jpg" alt="Log splitter side profile" fill className="object-contain p-4" />
+              <Image src="/images/splitter/50 Tonne Log Splitter 5.jpeg" alt="Log splitter side profile" fill className="object-contain p-4" />
             </div>
           </div>
         </div>

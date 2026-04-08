@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { X, Video, CheckCircle2, Loader2 } from "lucide-react";
+import { upload } from "@vercel/blob/client";
 
 interface Settings {
   dailyRate: number;
@@ -18,6 +19,11 @@ interface Settings {
   pickupInstructions: string;
   returnInstructions: string;
   heroVideoUrl: string | null;
+}
+
+/** Convert a private blob URL to our streaming proxy path */
+function proxyUrl(blobUrl: string) {
+  return `/api/hero-video?url=${encodeURIComponent(blobUrl)}`;
 }
 
 export default function AdminSettings() {
@@ -57,25 +63,19 @@ export default function AdminSettings() {
     setVideoError(null);
 
     try {
-      const response = await fetch("/api/upload/hero-video", {
-        method: "POST",
-        body: file,
-        headers: { "Content-Type": file.type },
+      const filename = `hero-video-${Date.now()}.${file.name.split(".").pop() || "mp4"}`;
+      const blob = await upload(filename, file, {
+        access: "private",
+        handleUploadUrl: "/api/upload/hero-video",
+        contentType: file.type,
       });
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Upload failed");
-      }
-
-      const { url } = await response.json();
-
-      // Save URL to settings state and DB
-      setSettings((prev) => prev ? { ...prev, heroVideoUrl: url } : prev);
+      // Save the blob URL to settings state and DB
+      setSettings((prev) => prev ? { ...prev, heroVideoUrl: blob.url } : prev);
       await fetch("/api/admin/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ heroVideoUrl: url }),
+        body: JSON.stringify({ heroVideoUrl: blob.url }),
       });
     } catch (err) {
       setVideoError((err as Error).message || "Upload failed");
@@ -190,10 +190,10 @@ export default function AdminSettings() {
 
           {s.heroVideoUrl ? (
             <div className="space-y-3">
-              {/* Preview */}
+              {/* Preview via proxy (private blob needs token) */}
               <div className="relative rounded-xl overflow-hidden bg-black aspect-video border border-gray-200">
                 <video
-                  src={s.heroVideoUrl}
+                  src={proxyUrl(s.heroVideoUrl)}
                   className="w-full h-full object-cover"
                   autoPlay
                   muted

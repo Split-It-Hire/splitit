@@ -152,12 +152,12 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Hero video */}
+            {/* Hero video — served via proxy route (private blob) */}
             {s.heroVideoUrl && (
               <div className="mt-10 lg:mt-0 lg:w-[42%] shrink-0">
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 aspect-video">
                   <video
-                    src={s.heroVideoUrl}
+                    src={`/api/hero-video?url=${encodeURIComponent(s.heroVideoUrl)}`}
                     className="w-full h-full object-cover"
                     autoPlay
                     muted

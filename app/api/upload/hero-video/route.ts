@@ -1,23 +1,35 @@
-export const runtime = "edge";
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import { NextRequest, NextResponse } from "next/server";
 
-import { put } from "@vercel/blob";
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  const body = (await request.json()) as HandleUploadBody;
 
-export async function POST(request: Request): Promise<Response> {
   try {
-    const contentType = request.headers.get("content-type") || "video/mp4";
-    const ext = contentType.includes("quicktime") || contentType.includes("mov")
-      ? "mov"
-      : contentType.includes("webm")
-      ? "webm"
-      : "mp4";
-
-    const blob = await put(`hero-video-${Date.now()}.${ext}`, request.body!, {
-      access: "public",
-      contentType,
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async () => {
+        return {
+          allowedContentTypes: [
+            "video/mp4",
+            "video/quicktime",
+            "video/webm",
+            "video/mov",
+          ],
+          maximumSizeInBytes: 200 * 1024 * 1024, // 200 MB
+          access: "private",
+        };
+      },
+      onUploadCompleted: async ({ blob }) => {
+        console.log("Hero video upload completed:", blob.pathname);
+      },
     });
 
-    return Response.json({ url: blob.url });
+    return NextResponse.json(jsonResponse);
   } catch (error) {
-    return Response.json({ error: String(error) }, { status: 400 });
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 400 }
+    );
   }
 }

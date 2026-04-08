@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Upload, X, Video, CheckCircle2, Loader2 } from "lucide-react";
+import { X, Video, CheckCircle2, Loader2 } from "lucide-react";
 import { upload } from "@vercel/blob/client";
 
 interface Settings {
@@ -27,7 +27,6 @@ export default function AdminSettings() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [videoUploading, setVideoUploading] = useState(false);
-  const [videoProgress, setVideoProgress] = useState(0);
   const [videoError, setVideoError] = useState<string | null>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
@@ -57,16 +56,12 @@ export default function AdminSettings() {
   async function handleVideoUpload(file: File) {
     setVideoUploading(true);
     setVideoError(null);
-    setVideoProgress(0);
 
     try {
       const filename = `hero-video-${Date.now()}.${file.name.split(".").pop() || "mp4"}`;
       const blob = await upload(filename, file, {
         access: "public",
         handleUploadUrl: "/api/upload/hero-video",
-        onUploadProgress: ({ percentage }) => {
-          setVideoProgress(Math.round(percentage));
-        },
       });
 
       // Save URL immediately to settings (both local state and DB)
@@ -80,7 +75,6 @@ export default function AdminSettings() {
       setVideoError((err as Error).message || "Upload failed");
     } finally {
       setVideoUploading(false);
-      setVideoProgress(0);
     }
   }
 
@@ -226,14 +220,8 @@ export default function AdminSettings() {
               {videoUploading ? (
                 <div className="border-2 border-dashed border-green-300 rounded-xl p-8 text-center bg-green-50">
                   <Loader2 size={32} className="mx-auto mb-3 text-green-600 animate-spin" />
-                  <p className="text-sm font-semibold text-green-700 mb-2">Uploading video...</p>
-                  <div className="w-full bg-green-200 rounded-full h-2 max-w-xs mx-auto">
-                    <div
-                      className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${videoProgress}%` }}
-                    />
-                  </div>
-                  <p className="text-xs text-green-600 mt-2">{videoProgress}%</p>
+                  <p className="text-sm font-semibold text-green-700">Uploading video...</p>
+                  <p className="text-xs text-green-500 mt-1">This may take a moment for large files</p>
                 </div>
               ) : (
                 <button

@@ -13,6 +13,7 @@ interface Settings {
   contactEmail: string;
   contactPhone: string;
   pickupSuburb: string;
+  pickupAddress: string;
   pickupInstructions: string;
   returnInstructions: string;
 }
@@ -131,6 +132,7 @@ export default function AdminSettings() {
             {textField("Contact Email", "contactEmail", "brett@splitithire.com.au")}
             {textField("Contact Phone", "contactPhone", "0414 601 836")}
             {textField("Pickup Suburb", "pickupSuburb", "Mudgeeraba")}
+            {textField("Pickup Address (sent in reminder email)", "pickupAddress", "3 Carrama Court, Mudgeeraba QLD 4213")}
           </div>
         </div>
 

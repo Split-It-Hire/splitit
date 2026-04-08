@@ -95,6 +95,7 @@ model Settings {
   contactEmail       String @default("")
   contactPhone       String @default("")
   pickupSuburb       String @default("Mudgeeraba")
+  pickupAddress      String @default("3 Carrama Court, Mudgeeraba QLD 4213")
   pickupInstructions String @default("")
   returnInstructions String @default("")
 }

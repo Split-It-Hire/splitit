@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import {
   CheckCircle,
   Calendar,
@@ -159,6 +160,36 @@ export default function HomePage() {
                 />
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Machine Gallery */}
+      <section className="py-14 bg-white border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <h2
+            className="text-3xl font-extrabold uppercase text-gray-900 mb-2"
+            style={{ fontFamily: "var(--font-barlow), sans-serif" }}
+          >
+            The Machine
+          </h2>
+          <p className="text-gray-500 mb-8">Bayer 50-tonne petrol log splitter — horizontal &amp; vertical operation.</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="col-span-2 md:col-span-2 row-span-2 relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
+              <Image src="/images/splitter/splitter-1.jpg" alt="Bayer 50-tonne log splitter - side angle" fill className="object-contain p-4" />
+            </div>
+            <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
+              <Image src="/images/splitter/splitter-2.jpg" alt="Log splitter in vertical position" fill className="object-contain p-4" />
+            </div>
+            <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
+              <Image src="/images/splitter/splitter-3.jpg" alt="Log splitter front view" fill className="object-contain p-4" />
+            </div>
+            <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
+              <Image src="/images/splitter/splitter-4.jpg" alt="Log splitter rear angle" fill className="object-contain p-4" />
+            </div>
+            <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
+              <Image src="/images/splitter/splitter-5.jpg" alt="Log splitter side profile" fill className="object-contain p-4" />
+            </div>
           </div>
         </div>
       </section>

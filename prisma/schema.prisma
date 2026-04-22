@@ -55,6 +55,10 @@ model Booking {
 
   // Admin
   adminNotes String?
+
+  // Automated email tracking (prevents duplicate sends)
+  pickupReminderSentAt DateTime?
+  returnReminderSentAt DateTime?
 }
 
 model WikiCategory {

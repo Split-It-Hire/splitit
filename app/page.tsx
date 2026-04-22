@@ -39,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const SPECS = [
-  { label: "Splitting Force", value: "30 Tonne" },
+  { label: "Splitting Force", value: "50 Tonne" },
   { label: "Power Source", value: "Petrol (Honda GX200)" },
   { label: "Max Log Length", value: "550 mm" },
   { label: "Max Log Diameter", value: "600 mm" },
@@ -143,7 +143,7 @@ export default async function HomePage() {
                 </span>
                 <span className="flex items-center gap-1.5">
                   <CheckCircle size={15} className="text-green-400" />
-                  30-tonne force
+                  50-tonne force
                 </span>
                 <span className="flex items-center gap-1.5">
                   <CheckCircle size={15} className="text-green-400" />
@@ -183,7 +183,7 @@ export default async function HomePage() {
           <p className="text-gray-500 mb-8">Everything you need. Nothing you don&apos;t.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              "30-tonne hydraulic log splitter (full tank of fuel)",
+              "50-tonne hydraulic log splitter (full tank of fuel)",
               "Safety glasses and work gloves",
               "Quick-start guide + operation manual",
               "Tow-ready trailer connection (if applicable)",
@@ -373,7 +373,7 @@ export default async function HomePage() {
                 The Machine
               </h2>
               <p className="text-gray-500 mb-6">
-                A serious 30-tonne petrol-powered log splitter. Handles hardwood,
+                A serious 50-tonne petrol-powered log splitter. Handles hardwood,
                 softwood, knotty rounds — whatever you throw at it.
               </p>
               <div className="grid grid-cols-2 gap-3">

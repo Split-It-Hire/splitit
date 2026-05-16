@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { head } from "@vercel/blob";
 import { format } from "date-fns";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -15,6 +16,11 @@ export default async function BookingDetailPage({ params }: Props) {
   const { id } = await params;
   const booking = await prisma.booking.findUnique({ where: { id } });
   if (!booking) notFound();
+
+  const [idFrontSignedUrl, idBackSignedUrl] = await Promise.all([
+    booking.idPhotoFrontUrl ? head(booking.idPhotoFrontUrl).then(b => b.downloadUrl).catch(() => null) : null,
+    booking.idPhotoBackUrl ? head(booking.idPhotoBackUrl).then(b => b.downloadUrl).catch(() => null) : null,
+  ]);
 
   const pickupChecklist = booking.pickupChecklist
     ? JSON.parse(booking.pickupChecklist as string)
@@ -76,8 +82,8 @@ export default async function BookingDetailPage({ params }: Props) {
             <h3 className="font-semibold text-gray-700 mt-5 mb-3">ID Photos</h3>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { label: "Front", url: booking.idPhotoFrontUrl },
-                { label: "Back", url: booking.idPhotoBackUrl },
+                { label: "Front", url: idFrontSignedUrl },
+                { label: "Back", url: idBackSignedUrl },
               ].map(({ label, url }) => (
                 <div key={label}>
                   <p className="text-xs text-gray-500 mb-1">{label}</p>

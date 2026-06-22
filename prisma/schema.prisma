@@ -53,6 +53,10 @@ model Booking {
   pickupChecklist String?
   returnChecklist String?
 
+  // Discount
+  discountCode   String?
+  discountAmount Float   @default(0)
+
   // Admin
   adminNotes String?
 
@@ -85,6 +89,19 @@ model BlockedDate {
   id     String   @id @default(cuid())
   date   DateTime
   reason String?
+}
+
+model DiscountCode {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  code          String    @unique
+  description   String?
+  discountType  String    // "fixed" or "percentage"
+  discountValue Float
+  active        Boolean   @default(true)
+  usageCount    Int       @default(0)
+  maxUses       Int?
+  expiresAt     DateTime?
 }
 
 model Settings {

@@ -7,30 +7,32 @@ import Stripe from "stripe";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { startDate, endDate, price, details, terms, deliveryFee, bondAmount } = body;
+    const { startDate, endDate, price, details, terms, deliveryFee, bondAmount, discountCode, discountAmount } = body;
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
     const start = parseISO(startDate);
     const end = parseISO(endDate);
 
-    const totalAmount = price.hireFeeTotal + (deliveryFee || 0);
+    const appliedDiscount = discountAmount || 0;
+    const totalAmount = Math.max((price.hireFeeTotal + (deliveryFee || 0)) - appliedDiscount, 0);
 
-    // Build line items
+    // Build line items — apply discount to hire fee first, then delivery
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const lineItems: any[] = [
-      {
-        price_data: {
-          currency: "aud",
-          product_data: {
-            name: `Log Splitter Hire — ${format(start, "d MMM")} to ${format(end, "d MMM yyyy")}`,
-            description: `${price.numberOfDays} day${price.numberOfDays !== 1 ? "s" : ""} · ${price.hireType} rate · Self-collection from Mudgeeraba`,
-          },
-          unit_amount: Math.round(price.hireFeeTotal * 100),
+    const lineItems: any[] = [];
+
+    const discountedHireFee = Math.max(price.hireFeeTotal - appliedDiscount, 0);
+    lineItems.push({
+      price_data: {
+        currency: "aud",
+        product_data: {
+          name: `Log Splitter Hire — ${format(start, "d MMM")} to ${format(end, "d MMM yyyy")}`,
+          description: `${price.numberOfDays} day${price.numberOfDays !== 1 ? "s" : ""} · ${price.hireType} rate · Self-collection from Mudgeeraba`,
         },
-        quantity: 1,
+        unit_amount: Math.round(discountedHireFee * 100),
       },
-    ];
+      quantity: 1,
+    });
 
     if (deliveryFee > 0) {
       lineItems.push({
@@ -68,6 +70,8 @@ export async function POST(req: NextRequest) {
         deliveryFee: deliveryFee || 0,
         bondAmount: bondAmount,
         totalCharged: totalAmount,
+        discountCode: discountCode || null,
+        discountAmount: appliedDiscount,
         termsAcceptedAt: new Date(),
         signatureDataUrl: terms.signatureDataUrl,
         bondStatus: "pending",

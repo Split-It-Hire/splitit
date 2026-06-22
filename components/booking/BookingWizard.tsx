@@ -64,6 +64,10 @@ export default function BookingWizard({
   const [terms, setTerms] = useState<TermsAcceptance | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [couponCode, setCouponCode] = useState("");
+  const [couponApplied, setCouponApplied] = useState<{ code: string; discountAmount: number; message: string } | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [couponChecking, setCouponChecking] = useState(false);
 
   function handleDateSelect(start: Date, end: Date, p: PriceResult) {
     setStartDate(start);
@@ -94,6 +98,26 @@ export default function BookingWizard({
     setStep(4);
   }
 
+  async function applyCoupon() {
+    if (!couponCode.trim() || !price || !details) return;
+    setCouponChecking(true);
+    setCouponError(null);
+    setCouponApplied(null);
+    const subtotal = price.hireFeeTotal + (details.deliveryOption === "delivery" ? deliveryFee : 0);
+    const res = await fetch("/api/discount/validate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: couponCode.trim(), total: subtotal }),
+    });
+    const data = await res.json();
+    if (data.valid) {
+      setCouponApplied({ code: couponCode.trim().toUpperCase(), discountAmount: data.discountAmount, message: data.message });
+    } else {
+      setCouponError(data.message || "Invalid code");
+    }
+    setCouponChecking(false);
+  }
+
   async function handlePayment() {
     if (!startDate || !price || !details || !terms) return;
     const effectiveEndDate = endDate ?? startDate;
@@ -116,6 +140,8 @@ export default function BookingWizard({
           terms,
           deliveryFee: delivery,
           bondAmount,
+          discountCode: couponApplied?.code || null,
+          discountAmount: couponApplied?.discountAmount || 0,
         }),
       });
 
@@ -134,11 +160,13 @@ export default function BookingWizard({
     }
   }
 
-  const totalAmount =
+  const subtotal =
     price && details
-      ? price.hireFeeTotal +
-        (details.deliveryOption === "delivery" ? deliveryFee : 0)
+      ? price.hireFeeTotal + (details.deliveryOption === "delivery" ? deliveryFee : 0)
       : null;
+  const totalAmount = subtotal !== null
+    ? Math.max(subtotal - (couponApplied?.discountAmount || 0), 0)
+    : null;
 
   return (
     <div>
@@ -279,6 +307,12 @@ export default function BookingWizard({
                 <span className="font-semibold">${deliveryFee.toFixed(2)}</span>
               </div>
             )}
+            {couponApplied && (
+              <div className="flex justify-between text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2">
+                <span>Discount ({couponApplied.code})</span>
+                <span className="font-semibold">−${couponApplied.discountAmount.toFixed(2)}</span>
+              </div>
+            )}
             <div className="border-t border-gray-100 pt-3 flex justify-between font-bold">
               <span>Total charged now</span>
               <span className="text-xl text-green-700">${totalAmount?.toFixed(2)}</span>
@@ -287,6 +321,41 @@ export default function BookingWizard({
               <span>Bond held (not charged)</span>
               <span className="font-semibold">${bondAmount.toFixed(2)}</span>
             </div>
+          </div>
+
+          {/* Coupon code */}
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Discount Code</label>
+            {couponApplied ? (
+              <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm">
+                <span className="text-green-700 font-semibold">{couponApplied.message}</span>
+                <button
+                  onClick={() => { setCouponApplied(null); setCouponCode(""); }}
+                  className="text-green-600 hover:text-green-800 text-xs underline ml-4"
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={couponCode}
+                  onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError(null); }}
+                  placeholder="Enter code"
+                  className="flex-1 border border-gray-300 rounded-xl px-4 py-3 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-green-500"
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); applyCoupon(); } }}
+                />
+                <button
+                  onClick={applyCoupon}
+                  disabled={couponChecking || !couponCode.trim()}
+                  className="bg-gray-100 hover:bg-gray-200 disabled:opacity-50 text-gray-700 font-semibold px-4 py-3 rounded-xl text-sm transition-colors"
+                >
+                  {couponChecking ? "..." : "Apply"}
+                </button>
+              </div>
+            )}
+            {couponError && <p className="mt-1.5 text-xs text-red-600">{couponError}</p>}
           </div>
 
           <div className="bg-gray-50 rounded-xl p-4 mb-6 text-sm space-y-1">

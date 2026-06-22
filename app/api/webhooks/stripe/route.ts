@@ -82,6 +82,14 @@ export async function POST(req: NextRequest) {
           }
         }
 
+        // Increment discount code usage if applicable
+        if (booking.discountCode) {
+          await prisma.discountCode.updateMany({
+            where: { code: booking.discountCode },
+            data: { usageCount: { increment: 1 } },
+          });
+        }
+
         // Send confirmation email
         await sendBookingConfirmation({
           id: booking.id,

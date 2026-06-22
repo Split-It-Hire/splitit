@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { head } from "@vercel/blob";
 import { format } from "date-fns";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -17,10 +16,12 @@ export default async function BookingDetailPage({ params }: Props) {
   const booking = await prisma.booking.findUnique({ where: { id } });
   if (!booking) notFound();
 
-  const [idFrontSignedUrl, idBackSignedUrl] = await Promise.all([
-    booking.idPhotoFrontUrl ? head(booking.idPhotoFrontUrl).then(b => b.downloadUrl).catch(() => null) : null,
-    booking.idPhotoBackUrl ? head(booking.idPhotoBackUrl).then(b => b.downloadUrl).catch(() => null) : null,
-  ]);
+  const idFrontSignedUrl = booking.idPhotoFrontUrl
+    ? `/api/admin/id-photo?url=${encodeURIComponent(booking.idPhotoFrontUrl)}`
+    : null;
+  const idBackSignedUrl = booking.idPhotoBackUrl
+    ? `/api/admin/id-photo?url=${encodeURIComponent(booking.idPhotoBackUrl)}`
+    : null;
 
   const pickupChecklist = booking.pickupChecklist
     ? JSON.parse(booking.pickupChecklist as string)

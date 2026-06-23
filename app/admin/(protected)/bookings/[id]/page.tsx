@@ -6,6 +6,7 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 import BondActions from "@/components/admin/BondActions";
 import BookingStatusControl from "@/components/admin/BookingStatusControl";
+import PaymentLinkButton from "@/components/admin/PaymentLinkButton";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -242,6 +243,11 @@ export default async function BookingDetailPage({ params }: Props) {
 
           {/* Status control */}
           <BookingStatusControl bookingId={booking.id} currentStatus={booking.status} />
+
+          {/* Payment link — for pending bookings that need to pay */}
+          {booking.status === "pending" && (
+            <PaymentLinkButton bookingId={booking.id} customerEmail={booking.customerEmail} />
+          )}
 
           {/* Bond management */}
           <BondActions

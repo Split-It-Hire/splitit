@@ -110,13 +110,34 @@ export async function sendBookingConfirmation(booking: BookingEmailData) {
 <p>Any questions? Reply to this email or call <strong>0414 601 836</strong>.</p>
 <p>Thanks for booking with us!</p>`;
 
-  await resend.emails.send({
-    from: FROM,
-    to: booking.customerEmail,
-    replyTo: REPLY_TO,
-    subject: `You're booked! Log Splitter Hire — ${format(booking.startDate, "d MMM")} to ${format(booking.endDate, "d MMM yyyy")}`,
-    html: baseTemplate("Booking Confirmation", body),
-  });
+  const ownerBody = `
+<h2>New booking received 🎉</h2>
+<div class="info-box">
+  <div class="info-row"><span class="info-label">Customer</span><span class="info-value">${booking.customerName}</span></div>
+  <div class="info-row"><span class="info-label">Email</span><span class="info-value">${booking.customerEmail}</span></div>
+  <div class="info-row"><span class="info-label">Dates</span><span class="info-value">${format(booking.startDate, "d MMM")} – ${format(booking.endDate, "d MMM yyyy")}</span></div>
+  <div class="info-row"><span class="info-label">Days</span><span class="info-value">${booking.numberOfDays} day${booking.numberOfDays !== 1 ? "s" : ""} (${booking.hireType})</span></div>
+  <div class="info-row"><span class="info-label">Collection</span><span class="info-value">${booking.deliveryOption === "delivery" ? `Delivery to ${booking.deliveryAddress}` : "Self-collection"}</span></div>
+  <div class="info-row"><span class="info-label">Total Charged</span><span class="info-value">$${booking.totalCharged.toFixed(2)}</span></div>
+  <div class="info-row"><span class="info-label">Bond</span><span class="info-value">$${booking.bondAmount.toFixed(2)} held</span></div>
+</div>
+<a class="cta-btn" href="${SITE_URL}/admin/bookings/${booking.id}">View Booking in Admin</a>`;
+
+  await Promise.all([
+    resend.emails.send({
+      from: FROM,
+      to: booking.customerEmail,
+      replyTo: REPLY_TO,
+      subject: `You're booked! Log Splitter Hire — ${format(booking.startDate, "d MMM")} to ${format(booking.endDate, "d MMM yyyy")}`,
+      html: baseTemplate("Booking Confirmation", body),
+    }),
+    resend.emails.send({
+      from: FROM,
+      to: REPLY_TO,
+      subject: `New booking — ${booking.customerName} — ${format(booking.startDate, "d MMM")} to ${format(booking.endDate, "d MMM yyyy")}`,
+      html: baseTemplate("New Booking", ownerBody),
+    }),
+  ]);
 }
 
 export async function sendPickupReminder(booking: BookingEmailData & { pickupAddress: string; pickupChecklistUrl: string }) {

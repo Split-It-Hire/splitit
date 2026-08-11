@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
-import { format, parseISO } from "date-fns";
+import { format, parse } from "date-fns";
 import Stripe from "stripe";
 
 export async function POST(req: NextRequest) {
@@ -11,8 +11,8 @@ export async function POST(req: NextRequest) {
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-    const start = parseISO(startDate);
-    const end = parseISO(endDate);
+    const start = parse(startDate, "yyyy-MM-dd", new Date());
+    const end = parse(endDate, "yyyy-MM-dd", new Date());
 
     const appliedDiscount = discountAmount || 0;
     const totalAmount = Math.max((price.hireFeeTotal + (deliveryFee || 0)) - appliedDiscount, 0);

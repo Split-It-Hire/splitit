@@ -133,8 +133,8 @@ export default function BookingWizard({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          startDate: startDate.toISOString(),
-          endDate: effectiveEndDate.toISOString(),
+          startDate: format(startDate, "yyyy-MM-dd"),
+          endDate: format(effectiveEndDate, "yyyy-MM-dd"),
           price,
           details,
           terms,

@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { format } from "date-fns";
+import { generateHireAgreementPdf } from "./generate-hire-agreement";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -64,6 +65,8 @@ export interface BookingEmailData {
   deliveryOption: string;
   deliveryAddress?: string | null;
   pickupSuburb?: string;
+  signatureDataUrl?: string | null;
+  termsAcceptedAt?: Date | null;
 }
 
 export async function sendBookingConfirmation(booking: BookingEmailData) {
@@ -123,6 +126,31 @@ export async function sendBookingConfirmation(booking: BookingEmailData) {
 </div>
 <a class="cta-btn" href="${SITE_URL}/admin/bookings/${booking.id}">View Booking in Admin</a>`;
 
+  // Generate signed hire agreement PDF if signature data is available
+  let pdfAttachment: { filename: string; content: Buffer } | null = null;
+  if (booking.signatureDataUrl && booking.termsAcceptedAt) {
+    try {
+      const pdfBuffer = await generateHireAgreementPdf({
+        bookingId: booking.id,
+        customerName: booking.customerName,
+        customerEmail: booking.customerEmail,
+        startDate: booking.startDate,
+        endDate: booking.endDate,
+        numberOfDays: booking.numberOfDays,
+        hireType: booking.hireType,
+        totalCharged: booking.totalCharged,
+        signatureDataUrl: booking.signatureDataUrl,
+        termsAcceptedAt: booking.termsAcceptedAt,
+      });
+      pdfAttachment = {
+        filename: `Split-It-Hire-Agreement-${booking.id.slice(0, 8)}.pdf`,
+        content: pdfBuffer,
+      };
+    } catch (err) {
+      console.error("Failed to generate hire agreement PDF:", err);
+    }
+  }
+
   await Promise.all([
     resend.emails.send({
       from: FROM,
@@ -130,6 +158,7 @@ export async function sendBookingConfirmation(booking: BookingEmailData) {
       replyTo: REPLY_TO,
       subject: `You're booked! Log Splitter Hire — ${format(booking.startDate, "d MMM")} to ${format(booking.endDate, "d MMM yyyy")}`,
       html: baseTemplate("Booking Confirmation", body),
+      attachments: pdfAttachment ? [pdfAttachment] : undefined,
     }),
     resend.emails.send({
       from: FROM,

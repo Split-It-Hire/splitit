@@ -105,6 +105,8 @@ export async function POST(req: NextRequest) {
           totalCharged: booking.totalCharged,
           deliveryOption: booking.deliveryOption,
           deliveryAddress: booking.deliveryAddress,
+          signatureDataUrl: booking.signatureDataUrl,
+          termsAcceptedAt: booking.termsAcceptedAt,
         });
 
         break;

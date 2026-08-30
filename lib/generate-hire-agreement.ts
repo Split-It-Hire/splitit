@@ -30,11 +30,21 @@ const CLAUSES: [string, string, string[]][] = [
   ],
   [
     "2. Equipment",
-    "The equipment hired is a 30-tonne hydraulic log splitter including safety accessories as specified in the booking confirmation. The Hirer accepts the equipment in the condition documented at pickup.",
+    "The equipment hired is a hydraulic log splitter including safety accessories as specified in the booking confirmation. The Hirer accepts the equipment in the condition documented at pickup.",
     [],
   ],
   [
-    "3. Hirer's Responsibilities",
+    "3. Safety Instructions and Manufacturer's Guide",
+    "Prior to hire, the Owner provides the Hirer with access to the manufacturer's operating instructions and safety procedures for the equipment. By completing this booking the Hirer acknowledges that:",
+    [
+      "They have been provided with, and have reviewed, the manufacturer's user guide and safety instructions for the log splitter (available at splitithire.com.au/guide)",
+      "They understand the safe operating procedures for the equipment before use",
+      "They will operate the equipment strictly in accordance with those instructions",
+      "They will ensure any other person who operates the equipment during the hire period has also reviewed the safety instructions",
+    ],
+  ],
+  [
+    "4. Hirer's Responsibilities",
     "The Hirer is responsible for:",
     [
       "Safe operation of the equipment at all times",
@@ -45,67 +55,67 @@ const CLAUSES: [string, string, string[]][] = [
     ],
   ],
   [
-    "4. Permitted and Prohibited Use",
+    "5. Permitted and Prohibited Use",
     "Permitted: Domestic log splitting for personal use. Prohibited: Sub-hire to a third party; use for commercial purposes without prior written consent; use by anyone other than the Hirer or persons authorised by the Owner; transport of the equipment outside Queensland.",
     [],
   ],
   [
-    "5. Damage and Loss",
+    "6. Damage and Loss",
     "The Hirer is liable for any damage to, or loss of, the equipment during the hire period (including loading, transport, and unloading). Damage includes any damage beyond normal wear and tear. The Owner will assess damage on return using the condition checklists completed at pickup and return. Repair or replacement costs will be deducted from the security bond, with any excess invoiced to the Hirer.",
     [],
   ],
   [
-    "6. Security Bond",
+    "7. Security Bond",
     "A security bond of $500 AUD is placed as a pre-authorisation hold on the Hirer's nominated card at the time of booking. This is NOT a charge — no funds are collected unless damage, late return, or fuel levies apply. If the machine is returned in good condition, on time, and with a full tank, the bond hold is released within 2 business days of return. The Hirer acknowledges the bond hold may appear as a pending transaction on their bank statement during this period.",
     [],
   ],
   [
-    "7. Late Return",
+    "8. Late Return",
     "If the equipment is not returned by 5:00 PM on the agreed return date, the Hirer will incur an additional charge equal to the applicable daily hire rate for each day (or part thereof) of delay, captured from the security bond or invoiced directly.",
     [],
   ],
   [
-    "8. Fuel Policy",
+    "9. Fuel Policy",
     "The equipment is provided with a full tank of fuel (regular unleaded petrol). It must be returned with a full tank. If returned with less than a full tank, a minimum fuel levy of $25 applies and will be captured from the security bond.",
     [],
   ],
   [
-    "9. Cancellation Policy",
+    "10. Cancellation Policy",
     "Full refund: cancellations received 48 hours or more before the hire start time. 50% refund: cancellations received between 24 and 48 hours before hire start. No refund: cancellations received within 24 hours of hire start. The security bond hold is always released immediately upon cancellation.",
     [],
   ],
   [
-    "10. Delivery and Collection",
+    "11. Delivery and Collection",
     "Where delivery is selected, the Owner or a nominated representative will deliver and collect the equipment within the agreed time window. The Hirer must ensure safe, clear access to the delivery location. Delivery fees are non-refundable.",
     [],
   ],
   [
-    "11. Insurance",
+    "12. Insurance",
     "The Owner maintains public liability insurance covering the equipment during periods it is under the Owner's custody. The Hirer is responsible for any damage caused to third-party property while the equipment is in the Hirer's possession. The Hirer's personal contents or vehicle insurance may be relevant — the Hirer should confirm their own coverage.",
     [],
   ],
   [
-    "12. Indemnity",
+    "13. Indemnity",
     "The Hirer indemnifies the Owner against any claim, loss, damage, liability, or expense arising from the Hirer's use of the equipment, including personal injury to the Hirer or any third party.",
     [],
   ],
   [
-    "13. Minimum Age",
+    "14. Minimum Age",
     "The Hirer must be 18 years of age or older. By accepting these Terms, the Hirer confirms they are at least 18 years of age.",
     [],
   ],
   [
-    "14. Privacy",
+    "15. Privacy",
     "The Hirer's personal information (including photo ID) is collected for identity verification and hire agreement purposes only. It is stored securely and is not shared with third parties except where required by law.",
     [],
   ],
   [
-    "15. Governing Law",
+    "16. Governing Law",
     "These Terms are governed by the laws of Queensland, Australia. Any disputes will be subject to the jurisdiction of the courts of Queensland.",
     [],
   ],
   [
-    "16. Entire Agreement",
+    "17. Entire Agreement",
     "These Terms, together with the booking confirmation, constitute the entire agreement between the parties and supersede all prior negotiations, representations, or agreements.",
     [],
   ],
@@ -235,7 +245,7 @@ export async function generateHireAgreementPdf(data: HireAgreementData): Promise
       .font("Helvetica")
       .fontSize(7.5)
       .text(
-        "The Hirer confirmed they had read and understood these Terms, confirmed they are 18+ years of age, accept full responsibility for the equipment, and provided the digital signature below.",
+        "The Hirer confirmed they had read and understood these Terms, confirmed they are 18+ years of age, accept full responsibility for the equipment, confirmed they have reviewed the manufacturer's safety instructions and user guide (splitithire.com.au/guide), and provided the digital signature below.",
         L + 5,
         sigY + 15,
         { width: W - 10 }

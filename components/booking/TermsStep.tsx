@@ -15,12 +15,14 @@ interface TermsAcceptance {
   signatureDataUrl: string;
   isAdult: boolean;
   acceptsResponsibility: boolean;
+  acknowledgesSafetyGuide: boolean;
 }
 
 export default function TermsStep({ onAccept, onBack }: Props) {
   const [agreed, setAgreed] = useState(false);
   const [isAdult, setIsAdult] = useState(false);
   const [acceptsResponsibility, setAcceptsResponsibility] = useState(false);
+  const [acknowledgesSafetyGuide, setAcknowledgesSafetyGuide] = useState(false);
   const [signature, setSignature] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,13 +39,17 @@ export default function TermsStep({ onAccept, onBack }: Props) {
       setError("Please confirm you accept responsibility for the equipment.");
       return;
     }
+    if (!acknowledgesSafetyGuide) {
+      setError("Please confirm you have reviewed the safety instructions and manufacturer's guide.");
+      return;
+    }
     if (!signature) {
       setError("Please add your digital signature.");
       return;
     }
 
     setError(null);
-    onAccept({ agreed, signatureDataUrl: signature, isAdult, acceptsResponsibility });
+    onAccept({ agreed, signatureDataUrl: signature, isAdult, acceptsResponsibility, acknowledgesSafetyGuide });
   }
 
   return (
@@ -87,6 +93,27 @@ export default function TermsStep({ onAccept, onBack }: Props) {
           <span className="text-sm text-gray-700">
             I understand I am responsible for the equipment during the hire period and will return
             it in the same condition.
+          </span>
+        </label>
+        <label className="flex items-start gap-3 cursor-pointer group">
+          <input
+            type="checkbox"
+            checked={acknowledgesSafetyGuide}
+            onChange={(e) => setAcknowledgesSafetyGuide(e.target.checked)}
+            className="mt-0.5 w-4 h-4 rounded border-gray-300 text-green-700 focus:ring-green-500"
+          />
+          <span className="text-sm text-gray-700">
+            I have reviewed the{" "}
+            <a
+              href="/guide"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-green-700 underline font-semibold"
+            >
+              manufacturer&apos;s safety instructions and user guide
+            </a>{" "}
+            and understand the safe operating procedures for the equipment. I will ensure anyone
+            else who operates the machine during my hire has also reviewed these instructions.
           </span>
         </label>
       </div>
